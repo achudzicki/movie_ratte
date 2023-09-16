@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block page_title %}
+    Movie
+{% endblock %}
+{% block page_content %}
+    {% if movie %}
+        <h1>Wybrany film</h1><br/>
+        <b>Tytuł oryginalny</b>: <span>{{ movie.original_title }}</span><br/>
+        <b>Tytuł</b>: <span>{{ movie.title }}</span><br/>
+        <b>Język oryginalny</b>: <span>{{ movie.original_language }}</span><br/>
+        <b>Opis</b>: <span>{{ movie.overview }}</span><br/>
+        <b>Popularność</b>: <span>{{ movie.popularity }}</span><br/>
+        <b>Data Wydania</b>: <span>{{ movie.release_date }}</span><br/>
+        <b>Średnia ocena</b>: <span>{{ movie.vote_average }}</span><br/>
+        <b>Liczba głosów</b>: <span>{{ movie.vote_count }}</span><br/>
+    {% else %}
+        <h3>Film nie został znaleziony, proszę przejść do <a href="{% url 'all_movies' %}">listy filmów</a></h3>
+    {% endif %}
+
+{% endblock %}

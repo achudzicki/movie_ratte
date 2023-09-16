@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    All Movies
+{% endblock %}
+{% block page_content %}
+    <h2 class="uk-text-primary">Wszystkie filmy</h2>
+    <table class="uk-table uk-table-striped">
+        <thead>
+        <tr>
+            <th>Tytuł</th>
+            <th>Tytuł Oryginalny</th>
+            <th>Opis</th>
+            <th>Data Wydania</th>
+            <th>Liczba głosów</th>
+            <th>Średnia ocena</th>
+            {% comment %}<th>Akcje</th>{% endcomment %}
+        </tr>
+        </thead>
+        <tbody>
+        {% comment %}Tutaj znana i podobna do tego co używaliśmy we Flasku składnia{% endcomment %}
+        {% for movie in movies %}
+            <tr>
+                {% comment %}Oba filtry |lowercae|capfirst i |title zadziałają tak samo{% endcomment %}
+                <td>{{ movie.title|title }}</td>
+                <td>{{ movie.original_title|title }}</td>
+                <td>{{ movie.overview }}</td>
+                <td>{{ movie.release_date }}</td>
+                <td>{{ movie.vote_count }}</td>
+                <td>{{ movie.vote_average|floatformat }}</td>
+                {% comment %}<td><a href="{% url 'movie' tmdb_id=movie.tmdb_id %}">Szczegóły</a></td>{% endcomment %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}
+
+
+
