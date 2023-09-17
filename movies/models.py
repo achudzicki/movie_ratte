@@ -14,8 +14,8 @@ class Movie:
         self.popularity = popularity
         self.release_date = release_date
         self.title = title
-        self.vote_average = vote_average
-        self.vote_count = vote_count
+        self.vote_average = float(vote_average)
+        self.vote_count = int(vote_count)
 
     @staticmethod
     def get_all_movies():

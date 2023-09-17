@@ -11,6 +11,9 @@
 - Dodanie do widoku pojedynczego filmu poprawnego tekstu informującego, że dany film nie został znaleziony.
 - Dodanie [dziedziczenia dokumentów HTML](#dziedziczenie-szablonów)
 - Dodanie [plików statycznych](#dodanie-plików-statycznych)
+- Stylowanie naszej tabeli i pojedynczego filmu 
+- Dodanie side-bar dla naszej aplikacji
+- Wyodrębnimy nasze przyciski menu do osobnego HTML, poznając tag 'include'
 
 ---
 

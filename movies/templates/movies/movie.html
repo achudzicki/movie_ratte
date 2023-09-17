@@ -4,15 +4,32 @@
 {% endblock %}
 {% block page_content %}
     {% if movie %}
-        <h1>Wybrany film</h1><br/>
-        <b>Tytuł oryginalny</b>: <span>{{ movie.original_title }}</span><br/>
-        <b>Tytuł</b>: <span>{{ movie.title }}</span><br/>
-        <b>Język oryginalny</b>: <span>{{ movie.original_language }}</span><br/>
-        <b>Opis</b>: <span>{{ movie.overview }}</span><br/>
-        <b>Popularność</b>: <span>{{ movie.popularity }}</span><br/>
-        <b>Data Wydania</b>: <span>{{ movie.release_date }}</span><br/>
-        <b>Średnia ocena</b>: <span>{{ movie.vote_average }}</span><br/>
-        <b>Liczba głosów</b>: <span>{{ movie.vote_count }}</span><br/>
+
+        <div class="uk-card uk-card-default uk-border-rounded">
+            <div class="uk-card-header">
+                <div class="uk-grid-small uk-flex-middle" uk-grid>
+                    <div class="uk-width-auto">
+                        {% if movie.vote_average >= 7 %}
+                            <h3 class="uk-text-success">{{ movie.vote_average }}</h3>
+                        {% elif movie >= 4 %}
+                            <h3 class="uk-text-warning">{{ movie.vote_average }}</h3>
+                        {% else %}
+                            <h3 class="uk-text-danger">{{ movie.vote_average }}</h3>
+                        {% endif %}
+                    </div>
+                    <div class="uk-width-expand">
+                        <h3 class="uk-card-title uk-margin-remove-bottom">{{ movie.title }}
+                            ({{ movie.original_title }})</h3>
+                        <p class="uk-text-meta uk-margin-remove-top">
+                            {{ movie.release_date }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="uk-card-body">
+                {{ movie.overview }}
+            </div>
+        </div>
     {% else %}
         <h3>Film nie został znaleziony, proszę przejść do <a href="{% url 'all_movies' %}">listy filmów</a></h3>
     {% endif %}
