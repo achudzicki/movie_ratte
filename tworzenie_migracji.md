@@ -12,4 +12,15 @@ Tworzenie widoków oraz mapowania URL nie jest wymagane.
    - Nazwa Książki, maksymalna długość - 255
    - Data wydania Książki
    - Średnia ocena Książki
+   - Liczba głosów
 4) Proszę wykonać migrację modelu do bazy danych (bez danych początkowych)
+
+---
+
+## Demo save() i all()
+
+---
+
+1) Dodanie nowego pola autor z domyślną wartością null
+2) Dodanie walidatorów na polu średnia ocena, wartość z zakresu 1-10
+3) Wykonanie migracji

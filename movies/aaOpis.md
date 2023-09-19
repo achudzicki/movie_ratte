@@ -27,6 +27,7 @@ Faza 2
 - Ustawiamy [migrację](#dodanie-integracji-z-mssql-server), aby nasza tabela została wygenerowana
 - Sprawdzamy, czy nasze filmy zostały zaimportowane do bazy danych
 - Teraz proszę wykonać [Zadanie tworzenia migracji](../tworzenie_migracji.md)
+- [Demo Django Query](../django_model_query.md)
 - Przepisujemy metodę ['find_all'](#wyszukiwanie-wyników) aby korzystała ona z Django Models (ze względu na dużą ilość danych zaczytujemy pierwsze 50 wierszy)
 - Przepisujemy metodę 'find_by_tmdb_id', aby korzystała ona z metody 'filter' Django Models
 - Dodanie [walidatorów](https://docs.djangoproject.com/en/4.2/ref/validators/) dla naszych pól

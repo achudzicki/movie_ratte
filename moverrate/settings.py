@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,7 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'movies'
+    'movies',
+    'books'
 ]
 
 MIDDLEWARE = [
@@ -72,20 +72,10 @@ WSGI_APPLICATION = 'moverrate.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
-
 DATABASES = {
     'default': {
-        "ENGINE": "mssql",
-        "NAME": "chudzick",
-        "USER": "chudzick",
-        "PASSWORD": DATABASE_PASSWORD,
-        "HOST": "morfeusz.wszib.edu.pl",
-        "PORT": "1433",
-        "OPTIONS": {
-            "driver": "ODBC Driver 18 for SQL Server",
-            'extra_params': 'Encrypt=no',
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
