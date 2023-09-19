@@ -1,5 +1,9 @@
 # Aplikacja movies
 
+---
+Faza 1
+---
+
 - Korzystamy z pliku [movies_small.csv](migrations/movies_small.csv)
 - Dodajmy 1 endpoint dla [wszystkich filmów](views.py), tworząc nową klasę Movie
 - Dodajemy 1 HTML z prostą tabelą [instrukcja tworzenia template](#praca-z-szablonami-widoków-templates)
@@ -16,6 +20,20 @@
 - Wyodrębnimy nasze przyciski menu do osobnego HTML, poznając tag 'include'
 
 ---
+Faza 2
+---
+- [Dodanie obsługi bazy danych dla naszego modelu Movie](#dodanie-modelu-django). Dodanie dodatkowych pól w modelu
+- Upewniamy się, że nasza aplikacja jest zarejestrowane w INSTALLED_APPS
+- Ustawiamy [migrację](#dodanie-integracji-z-mssql-server), aby nasza tabela została wygenerowana
+- Sprawdzamy, czy nasze filmy zostały zaimportowane do bazy danych
+- Teraz proszę wykonać [Zadanie tworzenia migracji](../tworzenie_migracji.md)
+- Przepisujemy metodę ['find_all'](#wyszukiwanie-wyników) aby korzystała ona z Django Models (ze względu na dużą ilość danych zaczytujemy pierwsze 50 wierszy)
+- Przepisujemy metodę 'find_by_tmdb_id', aby korzystała ona z metody 'filter' Django Models
+- Dodanie [walidatorów](https://docs.djangoproject.com/en/4.2/ref/validators/) dla naszych pól
+- Dodanie prostego widoku prezentującego Query Params
+- [Zadanie 2](#zadanie-2)
+- Dodamy naszą stronę dla 404 i obsłużymy GET movie by ID
+- 
 
 ## Praca z szablonami widoków (templates)
 
@@ -220,6 +238,165 @@ Pliki statyczne można także dodawać na poziomie aplikacji, podobnie do templa
 
 ```
 
+## Praca z bazą danych
+
+### Dodanie Modelu Django
+https://docs.djangoproject.com/en/4.2/ref/models/fields/#field-types
+- Aby dany Model był traktowany jako obiekt, który zostanie zmapowany na encję bazodanową musi dziedziczyć po klasie Model
+```python
+from django.db import models
+
+
+class Movie(models.Model):
+    pass
+```
+- Następnie musimy zdefiniować wszystkie pola naszej klasy, które będą mapowane na kolumny w relacyjnej bazie danych
+```python
+from django.db import models
+
+
+class Movie(models.Model):
+    id = models.AutoField()
+    tmdb_id = models.IntegerField(),
+    original_language = models.CharField(max_length=10),
+    original_title = models.CharField(max_length=512)
+    overview = models.TextField()
+    popularity = models.DecimalField(max_digits=10, decimal_places=2)
+    release_date = models.DateField()
+    title = models.CharField(max_length=512)
+    vote_average = models.DecimalField(max_digits=2, decimal_places=1)
+    vote_count = models.IntegerField()
+```
+```text
+Należy pamiętać że pole ID nie musi być zdefiniowane. Django automatycznie doda auto-generowane ID dla naszych
+modeli. Niektóre z typów wymagają jednego lub więcej argumentów, np. DecimalField czy CharField
+```
+
+### Dodanie integracji z MsSql Server
+- Instalujemy pakiet mssql-django
+```bash
+python -m pip install django mssql-django
+```
+- W pliku [settings.py](../moverrate/settings.py) ustawiamy dane dla naszej bazy danych
+```python
+DATABASES = {
+    'default': {
+        "ENGINE": "mssql",
+        "NAME": "chudzick",
+        "USER": "chudzick",
+        "PASSWORD": "Maslow180!",
+        "HOST": "morfeusz.wszib.edu.pl",
+        "PORT": "1433",
+        "OPTIONS": {
+            "driver": "ODBC Driver 18 for SQL Server",
+            'extra_params': 'Encrypt=no',
+        },
+    }
+}
+```
+- W pierwszym kroku wykonujemy polecenie z linii komend. Nawigujemy się do folderu projektu, nie aplikacji!
+- W naszym przypadku możemy też wywołać to w PyCharm Tools > Run manage tasks > komenda
+```bash
+python manage.py makemigrations
+```
+- Wygenerowana została pierwsza migracja w naszej aplikacji movies
+- Dodajemy teraz ładowanie naszych [danych wejściowych](migrations/movies.csv). https://docs.djangoproject.com/en/4.2/topics/migrations/#data-migrations
+- Dodajemy właśnie napisaną metodę do operations, aby wykonała się po utworzeniu nowej tabeli Movies.
+```python
+from movies.models import Movie
+import csv
+import datetime
+
+
+def load_initial_data(apps, schema_editor):
+    movies_arr = []
+    with open('movies/migrations/movies.csv', 'r', encoding='utf-8') as all_movies_file:
+        all_movies_file.readline()
+        reader = csv.reader(all_movies_file, delimiter=',')
+
+        for row in reader:
+            movie = Movie(tmdb_id=row[1], original_title=row[5], overview=row[11], popularity=float(row[2]),
+                          release_date=datetime.datetime.strptime(row[15], '%m/%d/%Y'), vote_average=float(row[17]),
+                          vote_count=int(row[16]), cast=row[6], genres=row[13], director=row[8], keywords=row[10])
+            movies_arr.append(movie)
+
+        Movie.objects.bulk_create(movies_arr)
+```
+- Uruchamiamy właściwą migrację, tworzymy tabele i insertujemy dane wejściowe
+```bash
+python manage.py migrate
+```
+- Migracja została uruchomiona i możemy zobaczyć wygenerowane tabele oraz dodane rekordy do tabeli movies
+```text
+Django wygenerowało więcej tabel niż się spodziewaliśmy. Powodem tego jest to że 
+w INSTALLED_APPS mamy więcej aplikacji (np. Admin) i one też potrzebują tabel do działania.
+```
+
+### Wyszukiwanie wyników
+
+#### all()
+Przepiszemy naszą metodę 'find_all' aby korzystała ona z Django Models.
+Dzięki temu, że nasza klasa Movie dziedziczy po klasie Model, ma ona dostęp do pola 'objects'. 
+Pole object ma dostęp do wielu metod potrzebnych do interakcji z bazą danych.
+W celu wyciągnięcia wszystkich wyników z bazy danych dla danego modelu możemy zastosować:
+```python
+Movie.objects.all()
+```
+Ze względu na to że w naszej tabeli movies jest blisko 10K rekordów, na początek chcemy zwrócić jedynie pierwsze
+50 wyników, w tym celu musimy zastosować limit. 
+```python
+Movie.objects.all()[:50]
+```
+Na pierwszy rzut oka wydawałoby się, żę najpierw zaczytamy wszystkie dane, a później dopiero zrobimy slice naszych wyników.
+Zestawy zapytań Django są leniwe. Oznacza to, że zapytanie trafi do bazy danych tylko wtedy, gdy wyraźnie poprosisz o wynik.
+Więc w naszym przypadku Django wygeneruje poprawne zapytanie z częścią "LIMIT 50"
+
+#### get()
+Aby otrzymać **dokładnie jeden** wynik, możemy użyć metody get() i przekazać do niej nasze 'filtry'
+```python
+from movies.models import Movie
+Movie.objects.get()
+
+Movie.objects.get(tmdb_id='TT11111')
+```
+Należy pamiętać, że jeżeli nie jesteśmy pewni tego, że w rezultacie otrzymamy 1 wynik, to nie należy używać 
+get. Znajdując więcej niż 1 wynik, metoda .get() rzuci nam błędem. Jeżeli nie jesteśmy pewni, że w wyniku otrzymamy
+dokładnie jeden wynik, lepiej jest zastosować metodę .filter()
+
+#### filter()
+Metoda filter pozwala nam na filtrowanie danych zwrotnych z bazy danych. 
+Należy pamiętać, że chcąc filtrować pola np. liczbowe, nie możemy porównywać ich 
+logicznymi operatorami takimi jak '<', '>', '<=' ... Zamiast tego musimy użyć [specjalnej składni dostarczonej przez
+Django](https://docs.djangoproject.com/en/4.2/ref/models/querysets/#field-lookups)
+```python
+from movies.models import Movie
+
+# Zwrócenia danych wszystkich
+Movie.objects.filter(tmdb_id='test111')
+
+# Zwrócenie tylko 1 znalezionej wartości
+Movie.objects.filter(tmdb_id='test111').first()
+
+# Zwrócenie danych większych niż
+# używamy specjalnej składni. Po nazwie naszego pola __gt
+# Django posiada cały zestaw operatorów https://docs.djangoproject.com/en/4.2/ref/models/querysets/#field-lookups
+# Zwróć filmy gdzie liczba głosów > 10 I średnia < 7.5
+Movie.objects.filter(vote_count__gt=10, vote_average__lt=7.5)
+```
+Metoda 'filter' napisany w ten sposób łączy nasze warunki operatorem logicznym AND. Gdy chcemy połączyć nasze warunki
+operatorem OR, musimy użyć specjalnej klasy dostarczonej przez Django Q.
+```python
+from movies.models import Movie
+from django.db.models import Q
+
+# Zwróć filmy gdzie liczba głosów > 10 LUB średnia < 7.5
+Movie.objects.filter(Q(vote_count__gt=10) | Q(vote_average__lt=7.5))
+
+# Jeżeli chcemy dodać kolejny warunek i połączyć AND to podajemy go po przecinku
+# Zwróć filmy gdzie (liczba głosów > 10 LUB średnia < 7.5) I reżyser = 'Test Director'
+Movie.objects.filter(Q(vote_count__gt=10) | Q(vote_average__lt=7.5), Q(director='Test Director'))
+```
+
 # Zadania
 
 ## Zadanie 1
@@ -236,5 +413,19 @@ w nowym widoku
 3) Dodanie nowego pliku HTML w folderze static/movies
 4) Dodanie nowej metody w klasie Movies, get_by_tmdb_id
 5) Zaprezentowanie nowego widoku pod url /movies/<int:tmdb_id>
+
+<span style="color:yellow">Czas na wykonanie zadania - 20min.</span>
+
+
+## Zadanie 2
+```text
+Proszę napisać nowy endpoint który będzie umożliwiał filtrowanie naszych filmów po tytule 'ILIKE'. 
+Filtrując proszę użyć metody __contains z Django models.
+```
+
+1) Dodanie nowego mapowania URL w urls.py (nie korzystamy z istniejącego URL /movies)
+2) Dodanie nowej metody w views.py
+3) Zwrócenie widoku
+4) Przetestowania działania ręcznie tworząc URL w przeglądarce
 
 <span style="color:yellow">Czas na wykonanie zadania - 20min.</span>
