@@ -23,10 +23,11 @@
 </head>
 <body> {% comment %}style="background-color: #29232c"{% endcomment %}
 <div uk-height-viewport="offset-bottom: 0" class="uk-flex" uk-flex>
-    <div class="uk-width-small" style="background: linear-gradient(0deg, rgba(78,60,87,1) 79%, rgba(131,67,60,1) 96%);">
+    <div class="uk-width-small" style="background: rgba(78,60,87,1);">
         <div class="uk-padding-small uk-flex uk-flex-column" style="gap: 15px">
             {% include 'menu_button.html' with name='Home' url_name='all_movies' icon='thumbnails' %}
             {% include 'menu_button.html' with name='Filmy' url_name='all_movies' icon='video-camera' %}
+            {% include 'menu_button.html' with name='Kolekcje' url_name='all_collections' icon='list' %}
         </div>
     </div>
     <div class="uk-width-expand">

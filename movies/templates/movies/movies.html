@@ -22,8 +22,8 @@
                     <td>{{ movie.original_title|title }}</td>
                     <td>{{ movie.overview }}</td>
                     <td>{{ movie.release_date }}</td>
-                    <td>{{ movie.vote_count }}</td>
-                    <td>{{ movie.vote_average|floatformat }}</td>
+                    <td>{{ movie.statistics.vote_count }}</td>
+                    <td>{{ movie.statistics.vote_average|floatformat }}</td>
                     <td><a href="{% url 'movie' id=movie.id %}">Szczegóły</a></td>
                 </tr>
             {% endfor %}

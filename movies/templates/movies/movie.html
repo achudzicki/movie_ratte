@@ -9,12 +9,12 @@
             <div class="uk-card-header">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     <div class="uk-width-auto">
-                        {% if movie.vote_average >= 7 %}
-                            <h3 class="uk-text-success">{{ movie.vote_average }}</h3>
-                        {% elif movie >= 4 %}
-                            <h3 class="uk-text-warning">{{ movie.vote_average }}</h3>
+                        {% if movie.statistics.vote_average >= 7 %}
+                            <h3 class="uk-text-success">{{ movie.statistics.vote_average }}</h3>
+                        {% elif movie.statistics.vote_average >= 4 %}
+                            <h3 class="uk-text-warning">{{ movie.statistics.vote_average }}</h3>
                         {% else %}
-                            <h3 class="uk-text-danger">{{ movie.vote_average }}</h3>
+                            <h3 class="uk-text-danger">{{ movie.statistics.vote_average }}</h3>
                         {% endif %}
                     </div>
                     <div class="uk-width-expand">

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block page_title %}
+    Collection
+{% endblock %}
+{% block page_content %}
+    {% if collection %}
+        <div class="uk-container">
+            <div class="uk-flex uk-flex-column uk-flex-between uk-margin-top">
+                <div>
+                    <h2>{{ collection.name }}</h2>
+                    <p>{{ collection.creation_date }}</p>
+                </div>
+                <table class="uk-table uk-table-striped">
+                    <thead>
+                    <tr>
+                        <th>Tytuł</th>
+                        <th>Opis</th>
+                        <th>Data Wydania</th>
+                        <th>Liczba głosów</th>
+                        <th>Średnia ocena</th>
+                        <th>Akcje</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for movie in movies %}
+                        <tr>
+                            <td>{{ movie.original_title|title }}</td>
+                            <td>{{ movie.overview }}</td>
+                            <td>{{ movie.release_date }}</td>
+                            <td>{{ movie.statistics.vote_count }}</td>
+                            <td>{{ movie.statistics.vote_average|floatformat }}</td>
+                            <td><a href="{% url 'movie' id=movie.id %}">Szczegóły</a></td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <h3>Kolekcja nie została znaleziona, proszę przejść do <a href="{% url 'all_collections' %}">listy kolekcji</a>
+        </h3>
+    {% endif %}
+
+{% endblock %}

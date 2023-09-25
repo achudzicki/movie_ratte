@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block page_title %}
+    All Collections
+{% endblock %}
+
+{% block page_content %}
+    <div class="uk-container">
+        <table class="uk-table uk-table-striped">
+            <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Właściciel</th>
+                <th>Data utworzenia</th>
+                <th>Data edycji</th>
+                <th>Liczba filmów</th>
+                <th>Akcje</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for collection in collections %}
+                <tr>
+                    <td>{{ collection.name }}</td>
+                    <td>{{ collection.owner.full_name }}</td>
+                    <td>{{ collection.creation_date }}</td>
+                    <td>{{ collection.update_date }}</td>
+                    <td>{{ collection.movie_count }}</td>
+                    <td><a href="{% url 'collection' id=collection.id %}">Szczegóły</a></td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+
+

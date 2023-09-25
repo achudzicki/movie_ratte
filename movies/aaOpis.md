@@ -1,7 +1,7 @@
 # Aplikacja movies
 
 ---
-Faza 1
+Faza 1 (Views + Templates)
 ---
 
 - Korzystamy z pliku [movies_small.csv](migrations/movies_small.csv)
@@ -20,7 +20,7 @@ Faza 1
 - Wyodrębnimy nasze przyciski menu do osobnego HTML, poznając tag 'include'
 
 ---
-Faza 2
+Faza 2 (Django Model)
 ---
 - [Dodanie obsługi bazy danych dla naszego modelu Movie](#dodanie-modelu-django). Dodanie dodatkowych pól w modelu
 - Upewniamy się, że nasza aplikacja jest zarejestrowane w INSTALLED_APPS
@@ -34,7 +34,21 @@ Faza 2
 - Dodanie prostego widoku prezentującego Query Params
 - [Zadanie 2](#zadanie-2)
 - Dodamy naszą stronę dla 404 i obsłużymy GET movie by ID
-- 
+
+
+---
+Faza 3 (Relations)
+--- 
+- Rozdzielenie naszej klasy Movie na mniejsze pod komponenty i powiązanie [jeden-do-jeden](#relacjaa-jeden-do-jeden)
+- [Zadanie 3](#zadanie-3)
+- [Demo Query powiązanych modeli](../django_model_query_relations.md)
+- Sprawdzenie jak teraz wygląda panel admina i jak zarządzać tam relacjami
+- Dodanie nowej klasy 'moja kolekcja filmów' i 'user' [powiązanie relacją jeden do wieli](#relacja-jeden-wiele)
+- Wykonanie migracji bazy danych
+- Dodanie powiązania relacją wiele do wielu, kolekcji filmów z filmami
+- Wykonanie migracji bazy danych
+- Poprawiamy nasze widoki: Wszystkich filmów, Szczegóły Filmu, aby były zgodne z nowym modelem
+- [Zadanie 4](#zadanie-4)
 
 ## Praca z szablonami widoków (templates)
 
@@ -398,6 +412,45 @@ Movie.objects.filter(Q(vote_count__gt=10) | Q(vote_average__lt=7.5))
 Movie.objects.filter(Q(vote_count__gt=10) | Q(vote_average__lt=7.5), Q(director='Test Director'))
 ```
 
+### Definiowanie Relacji pomiędzy obiektami
+
+#### Relacja jeden do jeden
+Rozbijemy sobie naszą klasę Movie na mniejsze pod komponenty, wyodrębnimy nową klasę Movie statistics.
+Powiążemy nasze klasy relacją 1-1 używając **OneToOneField**
+```python
+from django.core.validators import MinValueValidator, MinLengthValidator, MaxLengthValidator
+from django.db import models
+
+
+class MovieStatistics(models.Model):
+    vote_average = models.DecimalField(max_digits=5, decimal_places=2,
+                                       validators=[MinValueValidator(1)])
+    vote_count = models.IntegerField()
+    popularity = models.DecimalField(max_digits=20, decimal_places=10)
+
+
+class Movie(models.Model):
+    tmdb_id = models.CharField(max_length=255)
+    original_title = models.CharField(max_length=1000)
+    overview = models.TextField()
+    release_date = models.DateField()
+    cast = models.CharField(max_length=1000)
+    genres = models.CharField(max_length=1000)
+    director = models.CharField(max_length=1000)
+    keywords = models.TextField(validators=[MinLengthValidator(10)])
+    # Tak też można
+    # statistics = models.ForeignKey(MovieStatistics, on_delete=models.CASCADE)
+    statistics = models.OneToOneField(MovieStatistics, on_delete=models.CASCADE, primary_key=True)
+```
+Powiązanie klasy 1-1:
+- Dodajemy pole ForeignKey 
+- W konstruktorze podajemy nazwę klasy, z którą chcemy połączyć naszą encję
+- Dodajemy Name parameter 'on_delete', czyli informację co ma się stać z naszą encją po usunięciu obiekty Movie
+- Ustawiamy CASCADE, czyli nasza encja MovieStatistic zostanie usunięta w momencie usuwania Movie
+
+#### Relacja jeden-wiele
+Podobnie jak relacja jeden do jeden ale używamy **ForeginKey**
+
 # Zadania
 
 ## Zadanie 1
@@ -430,3 +483,30 @@ Filtrując proszę użyć metody __contains z Django models.
 4) Przetestowania działania ręcznie tworząc URL w przeglądarce
 
 <span style="color:yellow">Czas na wykonanie zadania - 20min.</span>
+
+## Zadanie 3
+```text
+Proszę przepisać klasę Book i wyodrębnić z niej Autora. 
+Proszę połączyć klasy relacją jeden do jeden
+```
+
+1) Dodać nową klasę Autor
+   - first_name
+   - last_name
+2) Połączyć klasę Book z klasą Author relacją jeden do jeden
+3) Utworzyć nową migrację 
+4) Korzystając z CMD dodać nową książkę wraz z powiązanym autorem
+
+<span style="color:yellow">Czas na wykonanie zadania - 15min.</span>
+
+## Zadanie 4
+```text
+Proszę dopisać nowy widok dla kolekcji filmów. (Analogicznie jak Filmy i szczegóły filmów)
+```
+1) Dodać nowy url dla wszystkich kolekcji filmów i szczegółów kolekcji
+2) Dodać nowy widok dla kolekcji filmów i szczegółów kolekcji
+3) Dodać nowe HTML dla obu widoków
+4) Dodać link w menu dla Listy Kolekcji Filmów
+5) Dodać ręcznie kilka danych testowych (kolekcja filmów, user). Preferowana forma dodania przez konsole.
+
+<span style="color:yellow">Czas na wykonanie zadania - 45min.</span>
