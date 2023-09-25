@@ -1,14 +1,34 @@
 from django.db.models import Count
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
-from .models import Movie, MovieCollection
+from .forms import MovieForm
+from .models import Movie, MovieCollection, MovieStatistics
 
 
 def all_movies(request):
-    # Pobieramy jedynie 50 wyników, tutaj zadziała lazy.
     movies_array = Movie.objects.all()[:50]
     return render(request, 'movies/movies.html', {
         "movies": movies_array
+    })
+
+
+def add_movie(request):
+    if request.method == 'POST':
+        # Wyciągamy dane z naszego formularza
+        new_movie_data = request.POST
+        initial_statistics = MovieStatistics.objects.create(vote_average=0, vote_count=0, popularity=0)
+        movie = Movie.create_from_form(new_movie_data)
+        movie.statistics = initial_statistics
+        movie.save()
+
+        # W redirect podajemy name naszego widoku (ustawiany w pliku urls.py)
+        return redirect('all_movies')
+
+    if request.method == 'GET':
+        form = MovieForm()
+
+    return render(request, 'movies/admin/movie_add.html', {
+        'movie_form': form
     })
 
 
@@ -26,21 +46,6 @@ def filter_movies(request):
 
 
 def find_by_tmdb_id(request, id):
-    # To będzie to samo
-    # Movie.objects.filter(tmdb_id=tmdb_id).first()
-    # Movie.objects.get(tmdb_id=tmdb_id)
-
-    # .get() pobierze 1 wynik pasujący do naszych key = value i get zawsze zwróci tylko 1 wynik.
-    # Znajdując więcej niż 1 wynik, rzuci nam błędem.
-    # Używać mając pewność, że jest unikalna wartość w bazie
-    # Dla pewności można używać filter() -> zadziała podobnie ale zwróci więcej wartości.
-    # Porównywanie nie może odbyć się przez operatory logiczne <, > itp.
-    # https://docs.djangoproject.com/en/4.2/ref/models/querysets/#field-lookups
-
-    # Tutaj dodatkowo skrót metoda, jak nie znajdzie obiektu, to rzuci 404.
-    # Dodając plik HTML 404.html i ustawiając wartość DEBU = false w pliku settings.py,
-    # Django automatycznie wyświetli nam nasz template 404.
-    # Na razie tego nie zrobimy, bo będziemy musieli ustawić ALLOWED_HOSTS[].
     found_movie = get_object_or_404(Movie, id=id)
     return render(request, 'movies/movie.html', {
         "movie": found_movie

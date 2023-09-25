@@ -31,6 +31,23 @@
         </div>
     </div>
     <div class="uk-width-expand">
+        <nav class="uk-navbar-container">
+            <div class="uk-container">
+                <div uk-navbar>
+                    <div class="uk-navbar-left">
+                        <span uk-icon="icon: users; ratio: 1.5"></span>
+                        <div>Admin</div>
+                        <ul class="uk-navbar-nav">
+                            <li>
+                                <a href="{% url 'add_movie' %}">
+                                    Dodaj Film
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
         {% block  page_content %}
         {% endblock %}
     </div>

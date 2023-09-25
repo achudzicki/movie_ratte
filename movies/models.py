@@ -24,6 +24,19 @@ class Movie(models.Model):
     def __str__(self):
         return f"{self.original_title}"
 
+    @staticmethod
+    def create_from_form(form_data):
+        return Movie(
+            tmdb_id=form_data['tmdb_id'],
+            original_title=form_data['title'],
+            overview=form_data['overview'],
+            release_date=form_data['release_date'],
+            cast=form_data['cast'],
+            genres=form_data['genres'],
+            director=form_data['director'],
+            keywords=form_data['keywords']
+        )
+
 
 class User(models.Model):
     first_name = models.CharField(max_length=100)

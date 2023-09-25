@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block page_title %}
+    Movie
+{% endblock %}
+{% block page_content %}
+    <div class="uk-container uk-margin-large-top">
+        <form class="uk-form-stacked" method="POST">
+
+
+            {% comment %}Dodanie tokena CSRF{% endcomment %}
+
+
+            {% csrf_token %}
+            <div class="uk-margin">
+                <label class="uk-form-label" for="tmdb_id">TMDB ID (optional)</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="tmdb_id" type="text" name="tmdb_id" placeholder="TMDB ID">
+                </div>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="title">Tytuł</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="title" type="text" name="title" placeholder="Tytuł">
+                </div>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="overview">Opis</label>
+                <div class="uk-form-controls">
+                <textarea cols="3" class="uk-input" id="overview" type="text" name="overview"
+                          placeholder="Opis">
+                </textarea>
+                </div>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="release_date">Data wydania</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="release_date" type="date" name="release_date" placeholder="Tytuł">
+                </div>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="cast">Obsada</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="cast" type="text" name="cast"
+                           placeholder="Proszę podać po ,">
+                </div>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="genres">Gatunki (rozdzielone |)</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="genres" type="text" name="genres"
+                           placeholder="Proszę podać rozdzielone |">
+                </div>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="director">Reżyser</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="director" type="text" name="director" placeholder="Reżyser">
+                </div>
+            </div>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="keywords">Słowa kluczowe</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="keywords" type="text" name="keywords"
+                           placeholder="Słowa kluczowe">
+                </div>
+            </div>
+            <div class="uk-margin uk-text-right">
+                <button type="submit" class="uk-button uk-button-default uk-button-primary">
+                    Dodaj
+                </button>
+            </div>
+
+            {{ movie_form }}
+        </form>
+    </div>
+{% endblock %}

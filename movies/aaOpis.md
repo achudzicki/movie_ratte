@@ -15,30 +15,32 @@ Faza 1 (Views + Templates)
 - Dodanie do widoku pojedynczego filmu poprawnego tekstu informującego, że dany film nie został znaleziony.
 - Dodanie [dziedziczenia dokumentów HTML](#dziedziczenie-szablonów)
 - Dodanie [plików statycznych](#dodanie-plików-statycznych)
-- Stylowanie naszej tabeli i pojedynczego filmu 
+- Stylowanie naszej tabeli i pojedynczego filmu
 - Dodanie side-bar dla naszej aplikacji
 - Wyodrębnimy nasze przyciski menu do osobnego HTML, poznając tag 'include'
 
 ---
 Faza 2 (Django Model)
 ---
+
 - [Dodanie obsługi bazy danych dla naszego modelu Movie](#dodanie-modelu-django). Dodanie dodatkowych pól w modelu
 - Upewniamy się, że nasza aplikacja jest zarejestrowane w INSTALLED_APPS
 - Ustawiamy [migrację](#dodanie-integracji-z-mssql-server), aby nasza tabela została wygenerowana
 - Sprawdzamy, czy nasze filmy zostały zaimportowane do bazy danych
 - Teraz proszę wykonać [Zadanie tworzenia migracji](../tworzenie_migracji.md)
 - [Demo Django Query](../django_model_query.md)
-- Przepisujemy metodę ['find_all'](#wyszukiwanie-wyników) aby korzystała ona z Django Models (ze względu na dużą ilość danych zaczytujemy pierwsze 50 wierszy)
+- Przepisujemy metodę ['find_all'](#wyszukiwanie-wyników) aby korzystała ona z Django Models (ze względu na dużą ilość
+  danych zaczytujemy pierwsze 50 wierszy)
 - Przepisujemy metodę 'find_by_tmdb_id', aby korzystała ona z metody 'filter' Django Models
 - Dodanie [walidatorów](https://docs.djangoproject.com/en/4.2/ref/validators/) dla naszych pól
 - Dodanie prostego widoku prezentującego Query Params
 - [Zadanie 2](#zadanie-2)
 - Dodamy naszą stronę dla 404 i obsłużymy GET movie by ID
 
-
 ---
 Faza 3 (Relations)
 --- 
+
 - Rozdzielenie naszej klasy Movie na mniejsze pod komponenty i powiązanie [jeden-do-jeden](#relacjaa-jeden-do-jeden)
 - [Zadanie 3](#zadanie-3)
 - [Demo Query powiązanych modeli](../django_model_query_relations.md)
@@ -49,6 +51,15 @@ Faza 3 (Relations)
 - Wykonanie migracji bazy danych
 - Poprawiamy nasze widoki: Wszystkich filmów, Szczegóły Filmu, aby były zgodne z nowym modelem
 - [Zadanie 4](#zadanie-4)
+
+---
+Faza 4 (Forms)
+---
+
+- Dodanie [formularza](#praca-z-formularzami-dodawania-danych) dodawania nowych filmów w znany sposób HTML+POST
+- Dodanie panelu nawigacyjnego dla admina
+- Dodanie klasy MovieForm jako Django Form [forms.py](forms.py)
+- Dodanie walidacji dla naszych pól klasy MovieForm
 
 ## Praca z szablonami widoków (templates)
 
@@ -182,24 +193,31 @@ Aby zapobiegać duplikowaniu kodu w szablonach HTML, możemy wprowadzić dziedzi
   wygenerował go za nas)
 - Tworzymy nowy dokument HTML o nazwie [base.html](../templates/base.html), będzie to główny layout naszego programu
 - Dodajemy do niego 2 dynamiczne sekcje: Tytuł i Body. Do tego użyjemy taga 'block' (podobnie jak we Flask)
+
 ```html
-{% block  <nazwa-blooku>%}
+{% block
+<nazwa-blooku>%}
     <domyślna-wartość-gdy-nie-przekazane-nic/>
-{% endblock %}
+    {% endblock %}
 ```
+
  ```html
   <title>{% block page_title%}Domyślny tutuł jak nie podamy nic{% endblock %}</title>
 ```
+
  ```html
+
 <body>
-   {% block page_content%}
-   {% endblock %}
+{% block page_content%}
+{% endblock %}
 </body>
 ``` 
-- Poinformowanie Django o ścieżce do naszego głównego HTML w pliku [settings.py](../moverrate/settings.py). Dodajemy w ustawieniach TEMPLATES odpowiednią ścieżkę.
+
+- Poinformowanie Django o ścieżce do naszego głównego HTML w pliku [settings.py](../moverrate/settings.py). Dodajemy w
+  ustawieniach TEMPLATES odpowiednią ścieżkę.
+
 ```python
 from pathlib import Path
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -219,36 +237,52 @@ TEMPLATES = [
     },
 ]
 ```
-- Dziedziczymy w naszych dokumentach HTML z właśnie utworzonego **base.html**. Wykorzystamy tag 'extends'. Dodajemy w odpowiednich blokach, nazwę strony i body.
+
+- Dziedziczymy w naszych dokumentach HTML z właśnie utworzonego **base.html**. Wykorzystamy tag 'extends'. Dodajemy w
+  odpowiednich blokach, nazwę strony i body.
+
 ```html
 {% extends 'base.html' %}
 ```
+
 - Dziedziczenie może być kontynuowane w kolejnych plikach.
+
 ```text
  base.html -> movies.html -> other.html
 ```
 
 ### Dodanie plików statycznych
+
 Dodamy stylowanie UiKit (css, js) do folderu [static](../static) w głównym folderze.
-Aby pliki statyczne działały, trzeba się upewnić, że w pliku [settings.py](../moverrate/settings.py) 
-w sekcji INSTALLED_APPS mamy: 
+Aby pliki statyczne działały, trzeba się upewnić, że w pliku [settings.py](../moverrate/settings.py)
+w sekcji INSTALLED_APPS mamy:
+
 ```text
     'django.contrib.staticfiles'
 ```
+
 Pliki statyczne można także dodawać na poziomie aplikacji, podobnie do templates.
+
 - W pliku [base.html](../templates/base.html) dodajemy nowy tag
+
 ```html
 {% load static %}
 ```
-- Dodajemy ścieżki do naszych plików css i js przy pomocy nowego taga 'static'
-```html
-    <link rel="stylesheet" href="/static/css/uikit.min.css">
 
-    <script src="/static/js/uikit.min.js"></script>
-    <script src="/static/js/uikit-icons.min.js"></script>
+- Dodajemy ścieżki do naszych plików css i js przy pomocy nowego taga 'static'
+
+```html
+
+<link rel="stylesheet" href="/static/css/uikit.min.css">
+
+<script src="/static/js/uikit.min.js"></script>
+<script src="/static/js/uikit-icons.min.js"></script>
 ```
-- Domyślnie Django szuka plików statycznych **tylko w aplikacjach**, aby dodać globalne pliki statyczne, potrzebne są dodatkowe kroki.
+
+- Domyślnie Django szuka plików statycznych **tylko w aplikacjach**, aby dodać globalne pliki statyczne, potrzebne są
+  dodatkowe kroki.
 - W pliku konfiguracyjnym [settings.py](../moverrate/settings.py) dodajmy nową listę STATICFILES_DIRS
+
 ```python
 
 ```
@@ -256,8 +290,12 @@ Pliki statyczne można także dodawać na poziomie aplikacji, podobnie do templa
 ## Praca z bazą danych
 
 ### Dodanie Modelu Django
+
 https://docs.djangoproject.com/en/4.2/ref/models/fields/#field-types
-- Aby dany Model był traktowany jako obiekt, który zostanie zmapowany na encję bazodanową musi dziedziczyć po klasie Model
+
+- Aby dany Model był traktowany jako obiekt, który zostanie zmapowany na encję bazodanową musi dziedziczyć po klasie
+  Model
+
 ```python
 from django.db import models
 
@@ -265,7 +303,9 @@ from django.db import models
 class Movie(models.Model):
     pass
 ```
+
 - Następnie musimy zdefiniować wszystkie pola naszej klasy, które będą mapowane na kolumny w relacyjnej bazie danych
+
 ```python
 from django.db import models
 
@@ -282,17 +322,22 @@ class Movie(models.Model):
     vote_average = models.DecimalField(max_digits=2, decimal_places=1)
     vote_count = models.IntegerField()
 ```
+
 ```text
 Należy pamiętać że pole ID nie musi być zdefiniowane. Django automatycznie doda auto-generowane ID dla naszych
 modeli. Niektóre z typów wymagają jednego lub więcej argumentów, np. DecimalField czy CharField
 ```
 
 ### Dodanie integracji z MsSql Server
+
 - Instalujemy pakiet mssql-django
+
 ```bash
 python -m pip install django mssql-django
 ```
+
 - W pliku [settings.py](../moverrate/settings.py) ustawiamy dane dla naszej bazy danych
+
 ```python
 DATABASES = {
     'default': {
@@ -309,14 +354,19 @@ DATABASES = {
     }
 }
 ```
+
 - W pierwszym kroku wykonujemy polecenie z linii komend. Nawigujemy się do folderu projektu, nie aplikacji!
 - W naszym przypadku możemy też wywołać to w PyCharm Tools > Run manage tasks > komenda
+
 ```bash
 python manage.py makemigrations
 ```
+
 - Wygenerowana została pierwsza migracja w naszej aplikacji movies
-- Dodajemy teraz ładowanie naszych [danych wejściowych](migrations/movies.csv). https://docs.djangoproject.com/en/4.2/topics/migrations/#data-migrations
+- Dodajemy teraz ładowanie
+  naszych [danych wejściowych](migrations/movies.csv). https://docs.djangoproject.com/en/4.2/topics/migrations/#data-migrations
 - Dodajemy właśnie napisaną metodę do operations, aby wykonała się po utworzeniu nowej tabeli Movies.
+
 ```python
 from movies.models import Movie
 import csv
@@ -337,11 +387,15 @@ def load_initial_data(apps, schema_editor):
 
         Movie.objects.bulk_create(movies_arr)
 ```
+
 - Uruchamiamy właściwą migrację, tworzymy tabele i insertujemy dane wejściowe
+
 ```bash
 python manage.py migrate
 ```
+
 - Migracja została uruchomiona i możemy zobaczyć wygenerowane tabele oraz dodane rekordy do tabeli movies
+
 ```text
 Django wygenerowało więcej tabel niż się spodziewaliśmy. Powodem tego jest to że 
 w INSTALLED_APPS mamy więcej aplikacji (np. Admin) i one też potrzebują tabel do działania.
@@ -350,39 +404,56 @@ w INSTALLED_APPS mamy więcej aplikacji (np. Admin) i one też potrzebują tabel
 ### Wyszukiwanie wyników
 
 #### all()
+
 Przepiszemy naszą metodę 'find_all' aby korzystała ona z Django Models.
-Dzięki temu, że nasza klasa Movie dziedziczy po klasie Model, ma ona dostęp do pola 'objects'. 
+Dzięki temu, że nasza klasa Movie dziedziczy po klasie Model, ma ona dostęp do pola 'objects'.
 Pole object ma dostęp do wielu metod potrzebnych do interakcji z bazą danych.
 W celu wyciągnięcia wszystkich wyników z bazy danych dla danego modelu możemy zastosować:
+
 ```python
+from movies.models import Movie
+
 Movie.objects.all()
 ```
-Ze względu na to że w naszej tabeli movies jest blisko 10K rekordów, na początek chcemy zwrócić jedynie pierwsze
-50 wyników, w tym celu musimy zastosować limit. 
+
+Ze względu na to, że w naszej tabeli movies jest blisko 10K rekordów, na początek chcemy zwrócić jedynie pierwsze
+50 wyników, w tym celu musimy zastosować limit.
+
 ```python
+from movies.models import Movie
+
 Movie.objects.all()[:50]
 ```
-Na pierwszy rzut oka wydawałoby się, żę najpierw zaczytamy wszystkie dane, a później dopiero zrobimy slice naszych wyników.
-Zestawy zapytań Django są leniwe. Oznacza to, że zapytanie trafi do bazy danych tylko wtedy, gdy wyraźnie poprosisz o wynik.
+
+Na pierwszy rzut oka wydawałoby się, żę najpierw zaczytamy wszystkie dane, a później dopiero zrobimy slice naszych
+wyników.
+Zestawy zapytań Django są leniwe. Oznacza to, że zapytanie trafi do bazy danych tylko wtedy, gdy wyraźnie poprosisz o
+wynik.
 Więc w naszym przypadku Django wygeneruje poprawne zapytanie z częścią "LIMIT 50"
 
 #### get()
+
 Aby otrzymać **dokładnie jeden** wynik, możemy użyć metody get() i przekazać do niej nasze 'filtry'
+
 ```python
 from movies.models import Movie
+
 Movie.objects.get()
 
 Movie.objects.get(tmdb_id='TT11111')
 ```
-Należy pamiętać, że jeżeli nie jesteśmy pewni tego, że w rezultacie otrzymamy 1 wynik, to nie należy używać 
+
+Należy pamiętać, że jeżeli nie jesteśmy pewni tego, że w rezultacie otrzymamy 1 wynik, to nie należy używać
 get. Znajdując więcej niż 1 wynik, metoda .get() rzuci nam błędem. Jeżeli nie jesteśmy pewni, że w wyniku otrzymamy
 dokładnie jeden wynik, lepiej jest zastosować metodę .filter()
 
 #### filter()
-Metoda filter pozwala nam na filtrowanie danych zwrotnych z bazy danych. 
-Należy pamiętać, że chcąc filtrować pola np. liczbowe, nie możemy porównywać ich 
+
+Metoda filter pozwala nam na filtrowanie danych zwrotnych z bazy danych.
+Należy pamiętać, że chcąc filtrować pola np. liczbowe, nie możemy porównywać ich
 logicznymi operatorami takimi jak '<', '>', '<=' ... Zamiast tego musimy użyć [specjalnej składni dostarczonej przez
 Django](https://docs.djangoproject.com/en/4.2/ref/models/querysets/#field-lookups)
+
 ```python
 from movies.models import Movie
 
@@ -398,8 +469,10 @@ Movie.objects.filter(tmdb_id='test111').first()
 # Zwróć filmy gdzie liczba głosów > 10 I średnia < 7.5
 Movie.objects.filter(vote_count__gt=10, vote_average__lt=7.5)
 ```
+
 Metoda 'filter' napisany w ten sposób łączy nasze warunki operatorem logicznym AND. Gdy chcemy połączyć nasze warunki
 operatorem OR, musimy użyć specjalnej klasy dostarczonej przez Django Q.
+
 ```python
 from movies.models import Movie
 from django.db.models import Q
@@ -415,8 +488,10 @@ Movie.objects.filter(Q(vote_count__gt=10) | Q(vote_average__lt=7.5), Q(director=
 ### Definiowanie Relacji pomiędzy obiektami
 
 #### Relacja jeden do jeden
+
 Rozbijemy sobie naszą klasę Movie na mniejsze pod komponenty, wyodrębnimy nową klasę Movie statistics.
 Powiążemy nasze klasy relacją 1-1 używając **OneToOneField**
+
 ```python
 from django.core.validators import MinValueValidator, MinLengthValidator, MaxLengthValidator
 from django.db import models
@@ -442,14 +517,26 @@ class Movie(models.Model):
     # statistics = models.ForeignKey(MovieStatistics, on_delete=models.CASCADE)
     statistics = models.OneToOneField(MovieStatistics, on_delete=models.CASCADE, primary_key=True)
 ```
+
 Powiązanie klasy 1-1:
-- Dodajemy pole ForeignKey 
+
+- Dodajemy pole ForeignKey
 - W konstruktorze podajemy nazwę klasy, z którą chcemy połączyć naszą encję
 - Dodajemy Name parameter 'on_delete', czyli informację co ma się stać z naszą encją po usunięciu obiekty Movie
 - Ustawiamy CASCADE, czyli nasza encja MovieStatistic zostanie usunięta w momencie usuwania Movie
 
 #### Relacja jeden-wiele
+
 Podobnie jak relacja jeden do jeden ale używamy **ForeginKey**
+
+## Praca z formularzami dodawania danych
+
+### Django Forms
+
+Django pomaga nam przy walidacji naszych formularzy w sposób wygodny.
+
+- Dodajemy w naszej aplikacji plik [forms.py](forms.py). Jest to opcjonalne, jednak często dodaje się taki dodatkowy plik dla czytelności. 
+- 
 
 # Zadania
 
@@ -470,8 +557,8 @@ w nowym widoku
 
 <span style="color:yellow">Czas na wykonanie zadania - 20min.</span>
 
-
 ## Zadanie 2
+
 ```text
 Proszę napisać nowy endpoint który będzie umożliwiał filtrowanie naszych filmów po tytule 'ILIKE'. 
 Filtrując proszę użyć metody __contains z Django models.
@@ -485,24 +572,27 @@ Filtrując proszę użyć metody __contains z Django models.
 <span style="color:yellow">Czas na wykonanie zadania - 20min.</span>
 
 ## Zadanie 3
+
 ```text
 Proszę przepisać klasę Book i wyodrębnić z niej Autora. 
 Proszę połączyć klasy relacją jeden do jeden
 ```
 
 1) Dodać nową klasę Autor
-   - first_name
-   - last_name
+    - first_name
+    - last_name
 2) Połączyć klasę Book z klasą Author relacją jeden do jeden
-3) Utworzyć nową migrację 
+3) Utworzyć nową migrację
 4) Korzystając z CMD dodać nową książkę wraz z powiązanym autorem
 
 <span style="color:yellow">Czas na wykonanie zadania - 15min.</span>
 
 ## Zadanie 4
+
 ```text
 Proszę dopisać nowy widok dla kolekcji filmów. (Analogicznie jak Filmy i szczegóły filmów)
 ```
+
 1) Dodać nowy url dla wszystkich kolekcji filmów i szczegółów kolekcji
 2) Dodać nowy widok dla kolekcji filmów i szczegółów kolekcji
 3) Dodać nowe HTML dla obu widoków
