@@ -60,6 +60,14 @@ Faza 4 (Forms)
 - Dodanie panelu nawigacyjnego dla admina
 - Dodanie klasy MovieForm jako Django Form [forms.py](forms.py)
 - Dodanie walidacji dla naszych pól klasy MovieForm
+  - Required
+  - Max Length
+  - Data wydania musi być w przeszłości
+- Dodanie walidacji (logiki biznesowej) podczas dodawania filmu:
+  - Jeżeli film o danym tytule już istnieje, to nie można dodać filmu
+- Dodanie naszego formularza jako ModelForm
+- Dodanie paginacji na stronie z filmami (5 filmów)
+- Dodanie nowych stylów na stronie z filmami
 
 ## Praca z szablonami widoków (templates)
 

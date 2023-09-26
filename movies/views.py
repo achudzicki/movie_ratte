@@ -2,7 +2,7 @@ from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 
 from .forms import MovieForm
-from .models import Movie, MovieCollection, MovieStatistics
+from .models import Movie, MovieCollection
 
 
 def all_movies(request):
@@ -15,20 +15,25 @@ def all_movies(request):
 def add_movie(request):
     if request.method == 'POST':
         # Wyciągamy dane z naszego formularza
-        new_movie_data = request.POST
-        initial_statistics = MovieStatistics.objects.create(vote_average=0, vote_count=0, popularity=0)
-        movie = Movie.create_from_form(new_movie_data)
-        movie.statistics = initial_statistics
-        movie.save()
+        new_movie_data = MovieForm(request.POST)
 
-        # W redirect podajemy name naszego widoku (ustawiany w pliku urls.py)
-        return redirect('all_movies')
+        if new_movie_data.is_valid():
+            movie_data = new_movie_data.cleaned_data
 
-    if request.method == 'GET':
-        form = MovieForm()
+            if Movie.movie_with_tile_exist(movie_data['title']):
+                return render(request, 'movies/admin/movie_add.html', {
+                    'movie_form': new_movie_data,
+                    'additional_errors': [f"Film o tytule {movie_data['title']} już istnieje"]
+                })
+
+            Movie.create_from_form(movie_data)
+            # W redirect podajemy name naszego widoku (ustawiany w pliku urls.py)
+            return redirect('all_movies')
+    else:
+        new_movie_data = MovieForm()
 
     return render(request, 'movies/admin/movie_add.html', {
-        'movie_form': form
+        'movie_form': new_movie_data
     })
 
 

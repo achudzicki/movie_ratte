@@ -25,8 +25,15 @@ class Movie(models.Model):
         return f"{self.original_title}"
 
     @staticmethod
+    def movie_with_tile_exist(title: str):
+        found_count = Movie.objects.filter(original_title=title).count()
+        return found_count > 0
+
+    @staticmethod
     def create_from_form(form_data):
-        return Movie(
+        initial_statistics = MovieStatistics.objects.create(vote_average=0, vote_count=0, popularity=0)
+
+        Movie.objects.create(
             tmdb_id=form_data['tmdb_id'],
             original_title=form_data['title'],
             overview=form_data['overview'],
@@ -34,7 +41,8 @@ class Movie(models.Model):
             cast=form_data['cast'],
             genres=form_data['genres'],
             director=form_data['director'],
-            keywords=form_data['keywords']
+            keywords=form_data['keywords'],
+            statistics=initial_statistics
         )
 
 
