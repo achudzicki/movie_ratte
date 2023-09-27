@@ -29,7 +29,10 @@
                             <td>{{ movie.release_date }}</td>
                             <td>{{ movie.statistics.vote_count }}</td>
                             <td>{{ movie.statistics.vote_average|floatformat }}</td>
-                            <td><a href="{% url 'movie' id=movie.id %}">Szczegóły</a></td>
+                            <td>
+                                <a href="{% url 'movie' id=movie.id %}">Szczegóły</a>
+                                <a href="{% url 'remove_movie_from_collection' collection_id=collection.id movie_id=movie.id %}">Usuń</a>
+                            </td>
                         </tr>
                     {% endfor %}
 

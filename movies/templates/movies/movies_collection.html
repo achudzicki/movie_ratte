@@ -50,7 +50,10 @@
                     <td>{{ collection.creation_date }}</td>
                     <td>{{ collection.update_date }}</td>
                     <td>{{ collection.movie_count }}</td>
-                    <td><a href="{% url 'collection' id=collection.id %}">Szczegóły</a></td>
+                    <td>
+                        <a href="{% url 'collection' id=collection.id %}">Szczegóły</a>
+                        <a href="{% url 'remove_collection' collection_id=collection.id %}">Usuń</a>
+                    </td>
                 </tr>
             {% endfor %}
 

@@ -33,6 +33,11 @@
                                     Ocen społeczności
                                 </p>
                             </div>
+                            <div class="uk-margin-small-left">
+                                <a uk-tooltip="Dodaj do kolekcji"
+                                   href="{% url 'add_movie_to_collection' movie_id=movie.id %}"
+                                   class="uk-icon-button" uk-icon="album"></a>
+                            </div>
                         </div>
 
                     </div>

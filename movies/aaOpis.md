@@ -74,6 +74,9 @@ Faza 4 (Forms)
 - Dodanie na stronie szczegółów filmu 5 najnowszych filmów
 - Poprawienie stylu strony z dodawaniem Filmu
 - [Zadanie 5](#zadanie-5)
+- [Zadanie 6](#zadanie-6)
+- Dodanie możliwości usuwania filmów z kolekcji oraz usuwania całych kolekcji
+- Poprawienie widoku kolekcji
 
 ## Praca z szablonami widoków (templates)
 
@@ -627,9 +630,14 @@ Proszę dodać formularz dodawania kolekcji filmów.
 
 <span style="color:yellow">Czas na wykonanie zadania - 20min.</span>
 
-## Zadanie 6 
+## Zadanie 6
+
 ```text
 Proszę dodać funkcjonalność dodawania filmów do kolekcji. Dodawanie filmu powinno odbywać się z poziomu
 szczegółów filmu. Powinniśmy móc dodać film tylko do kolekcji w których go jeszcze nie ma.
 Po kliknięciu w guzik dodawania do kolekcji przenosimy użytkownika do nowej strony z wyborem kolekcji.
 ```
+
+1) Dodać metodę w views.py
+2) Dodać mapowanie w urls.py
+3) Dodać nowy HTML dla połączenia filmu i kolekcji

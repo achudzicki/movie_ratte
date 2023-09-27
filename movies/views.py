@@ -108,3 +108,35 @@ def collection_details(request, id):
         'collection': movie_collection,
         'movies': movies_in_collection
     })
+
+
+# Metoda GET powinna wyświetlić wybrany film i listę kolekcji, gdzie tego filmu jeszcze nie ma.
+# Metoda POST powinna dodać film do kolekcji
+def add_movie_to_collection(request, movie_id):
+    found_movie = get_object_or_404(Movie, id=movie_id)
+
+    if request.POST:
+        collection = get_object_or_404(MovieCollection, id=request.POST.get('collection_id', 0))
+        collection.update_date = datetime.date.today()
+        collection.movies.add(found_movie)
+        collection.save()
+        return redirect('all_collections')
+
+    available_collections = MovieCollection.objects.exclude(movies__id=movie_id)
+    return render(request, 'movies/movie_collection_bind.html', {
+        'movie': found_movie,
+        'available_collections': available_collections
+    })
+
+
+def remove_movie_from_collection(request, collection_id, movie_id):
+    collection = get_object_or_404(MovieCollection, id=collection_id)
+    movie_to_remove = get_object_or_404(Movie, id=movie_id)
+    collection.movies.remove(movie_to_remove)
+    return redirect('collection', id=collection_id)
+
+
+def remove_collection(request, collection_id):
+    collection_to_remove = get_object_or_404(MovieCollection, id=collection_id)
+    collection_to_remove.delete()
+    return redirect('all_collections')
