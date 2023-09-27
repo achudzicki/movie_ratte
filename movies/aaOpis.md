@@ -68,6 +68,12 @@ Faza 4 (Forms)
 - Dodanie naszego formularza jako ModelForm
 - Dodanie paginacji na stronie z filmami (5 filmów)
 - Dodanie nowych stylów na stronie z filmami
+- Dodanie integracji z IMDB API
+- Dodanie wyszukiwania po nazwie filmu
+- Dodanie nowych stylów dla szczegółów filmu
+- Dodanie na stronie szczegółów filmu 5 najnowszych filmów
+- Poprawienie stylu strony z dodawaniem Filmu
+- 
 
 ## Praca z szablonami widoków (templates)
 

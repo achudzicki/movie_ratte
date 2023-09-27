@@ -32,6 +32,7 @@ class MovieForm(forms.Form):
             field.error_messages['required'] = f'Pole {field.label} jest wymagane'
         for visible in self.visible_fields():
             visible.field.widget.attrs['class'] = 'uk-input'
+            visible.field.widget.attrs['style'] = 'background-color: inherit!important'
 
 
 # Drugi sposób na zdefiniowanie naszego formularza

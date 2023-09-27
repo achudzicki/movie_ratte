@@ -1,5 +1,12 @@
 from django.core.validators import MinValueValidator, MinLengthValidator
 from django.db import models
+# python -m pip install requests
+import requests
+from dotenv import load_dotenv
+import os
+import random
+
+load_dotenv()
 
 
 class MovieStatistics(models.Model):
@@ -44,6 +51,32 @@ class Movie(models.Model):
             keywords=form_data['keywords'],
             statistics=initial_statistics
         )
+
+    def poster_url(self):
+        if not self.tmdb_id:
+            return None
+
+        response = requests.get(
+            f'https://api.themoviedb.org/3/movie/{self.tmdb_id}?api_key={os.environ.get("TMDB_APIKEY")}'
+            f'&language=en-US')
+        data = response.json()
+
+        if response.status_code == 200 and data['poster_path']:
+            return "https://image.tmdb.org/t/p/w500/" + data['poster_path']
+
+        return ''
+
+    def backdrop_image(self):
+        if not self.tmdb_id:
+            return None
+        response = requests.get(
+            f'https://api.themoviedb.org/3/movie/{self.tmdb_id}?api_key={os.environ.get("TMDB_APIKEY")}')
+        data = response.json()
+
+        if response.status_code == 200 and data['backdrop_path']:
+            return "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/" + data['backdrop_path']
+
+        return ''
 
 
 class User(models.Model):

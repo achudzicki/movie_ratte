@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -6,9 +7,34 @@ from .models import Movie, MovieCollection
 
 
 def all_movies(request):
-    movies_array = Movie.objects.all()[:50]
+    # Pamiętamy, że tutaj nie idzie jeszcze zapytanie do bazy danych
+    title = request.GET.get('title')
+    if title:
+        movies = Movie.objects.filter(original_title__contains=title)
+    else:
+        movies = Movie.objects.all()
+
+    # Tworzymy instancje Paginatora
+    paginator = Paginator(movies, 5)
+
+    # Patrzymy, o jaką stronę nam chodzi (podajemy query param 'page').
+    page_num = request.GET.get('page', 1)
+
+    # Finalnie tworzymy obiekt Strony z naszymi Danymi
+    page = paginator.get_page(page_num)
+
+    # print(page.object_list)
+    # print(page.number)
+    # print(page.has_previous())
+    # print(page.has_next())
+    # if page.has_previous():
+    #    print(page.previous_page_number())
+    # if page.has_next():
+    #    print(page.next_page_number())
+
     return render(request, 'movies/movies.html', {
-        "movies": movies_array
+        "movies_page": page,
+        "filter_name": title
     })
 
 
@@ -37,23 +63,12 @@ def add_movie(request):
     })
 
 
-def filter_movies(request):
-    title = request.GET.get('title')
-    if title:
-        found_movies = Movie.objects.filter(original_title__contains=title)
-    else:
-        found_movies = Movie.objects.all()[:50]
-
-    return render(request, 'movies/movies.html', {
-        "movies": found_movies,
-        "filter_name": title
-    })
-
-
 def find_by_tmdb_id(request, id):
     found_movie = get_object_or_404(Movie, id=id)
+    latest_movies = Movie.objects.all().order_by('-release_date')[:5]
     return render(request, 'movies/movie.html', {
-        "movie": found_movie
+        "movie": found_movie,
+        "latest_movie": latest_movies
     })
 
 
