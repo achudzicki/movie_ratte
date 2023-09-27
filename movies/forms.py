@@ -35,6 +35,20 @@ class MovieForm(forms.Form):
             visible.field.widget.attrs['style'] = 'background-color: inherit!important'
 
 
+class MovieCollectionForm(forms.Form):
+    name = forms.CharField(max_length=255, label='Nazwa kolekcji', error_messages={
+        'max_length': 'Maksymalna długość nazwy kolekcji to 255'
+    })
+
+    def __init__(self, *args, **kwargs):
+        super(MovieCollectionForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.error_messages['required'] = f'Pole {field.label} jest wymagane'
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'uk-input'
+            visible.field.widget.attrs['style'] = 'background-color: inherit!important'
+
+
 # Drugi sposób na zdefiniowanie naszego formularza
 # W tym wypadku nasz formularz zostanie automatycznie wygenerowany z naszego modelu
 from .models import Movie

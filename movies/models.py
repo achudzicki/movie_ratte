@@ -95,3 +95,7 @@ class MovieCollection(models.Model):
     update_date = models.DateField()
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     movies = models.ManyToManyField(Movie)
+
+    @staticmethod
+    def collection_exist(collection_name):
+        return MovieCollection.objects.filter(name__contains=collection_name).count() > 0

@@ -6,7 +6,32 @@
 
 {% block page_content %}
     <div class="uk-container">
-        <table class="uk-table uk-table-striped">
+        {% if additional_errors %}
+            <div class="uk-alert-danger" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                {% for error in additional_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form class="uk-form-stacked" method="POST">
+            {% csrf_token %}
+            {% for field in collection_form %}
+                <div class="uk-margin">
+                    <label class="uk-form-label" style="color: white">{{ field.label_tag }}</label>
+                    <div class="uk-form-controls">
+                        {{ field }}
+                    </div>
+                    <div class="uk-text-danger uk-margin-small-top">
+                        {{ field.errors }}
+                    </div>
+                </div>
+            {% endfor %}
+            <button type="submit" style="background-color: red; color: white"
+                    class="uk-button uk-button-default uk-border-rounded">Dodaj
+            </button>
+        </form>
+        <table class="uk-table uk-table-divider">
             <thead>
             <tr>
                 <th>Nazwa</th>

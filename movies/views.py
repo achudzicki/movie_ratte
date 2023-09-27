@@ -1,9 +1,11 @@
+import datetime
+
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .forms import MovieForm
-from .models import Movie, MovieCollection
+from .forms import MovieForm, MovieCollectionForm
+from .models import Movie, MovieCollection, User
 
 
 def all_movies(request):
@@ -72,10 +74,30 @@ def find_by_tmdb_id(request, id):
     })
 
 
-def all_collections(request):
-    movie_collections = MovieCollection.objects.all().annotate(movie_count=Count('movies'))
+def movie_collections(request):
+    additional_errors = []
+    if request.POST:
+        new_collection = MovieCollectionForm(request.POST)
+
+        if new_collection.is_valid():
+            collection_data = new_collection.cleaned_data
+
+            if not MovieCollection.collection_exist(collection_data['name']):
+                # Na razie bierzemy 1 ownera z góry, później będzie to zalogowana osoba.
+                owner = User.objects.all()[:1][0]
+                MovieCollection.objects.create(name=collection_data['name'], creation_date=datetime.date.today(),
+                                               update_date=datetime.date.today(), owner=owner)
+                return redirect('all_collections')
+
+            additional_errors.append(f"Kolekcja o nazwie {collection_data['name']} już istnieje!")
+    else:
+        new_collection = MovieCollectionForm()
+
+    found_collections = MovieCollection.objects.all().annotate(movie_count=Count('movies'))
     return render(request, 'movies/movies_collection.html', {
-        "collections": movie_collections
+        "collections": found_collections,
+        'collection_form': new_collection,
+        'additional_errors': additional_errors
     })
 
 

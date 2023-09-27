@@ -60,11 +60,11 @@ Faza 4 (Forms)
 - Dodanie panelu nawigacyjnego dla admina
 - Dodanie klasy MovieForm jako Django Form [forms.py](forms.py)
 - Dodanie walidacji dla naszych pól klasy MovieForm
-  - Required
-  - Max Length
-  - Data wydania musi być w przeszłości
+    - Required
+    - Max Length
+    - Data wydania musi być w przeszłości
 - Dodanie walidacji (logiki biznesowej) podczas dodawania filmu:
-  - Jeżeli film o danym tytule już istnieje, to nie można dodać filmu
+    - Jeżeli film o danym tytule już istnieje, to nie można dodać filmu
 - Dodanie naszego formularza jako ModelForm
 - Dodanie paginacji na stronie z filmami (5 filmów)
 - Dodanie nowych stylów na stronie z filmami
@@ -73,7 +73,7 @@ Faza 4 (Forms)
 - Dodanie nowych stylów dla szczegółów filmu
 - Dodanie na stronie szczegółów filmu 5 najnowszych filmów
 - Poprawienie stylu strony z dodawaniem Filmu
-- 
+- [Zadanie 5](#zadanie-5)
 
 ## Praca z szablonami widoków (templates)
 
@@ -549,8 +549,9 @@ Podobnie jak relacja jeden do jeden ale używamy **ForeginKey**
 
 Django pomaga nam przy walidacji naszych formularzy w sposób wygodny.
 
-- Dodajemy w naszej aplikacji plik [forms.py](forms.py). Jest to opcjonalne, jednak często dodaje się taki dodatkowy plik dla czytelności. 
-- 
+- Dodajemy w naszej aplikacji plik [forms.py](forms.py). Jest to opcjonalne, jednak często dodaje się taki dodatkowy
+  plik dla czytelności.
+-
 
 # Zadania
 
@@ -614,3 +615,21 @@ Proszę dopisać nowy widok dla kolekcji filmów. (Analogicznie jak Filmy i szcz
 5) Dodać ręcznie kilka danych testowych (kolekcja filmów, user). Preferowana forma dodania przez konsole.
 
 <span style="color:yellow">Czas na wykonanie zadania - 45min.</span>
+
+## Zadanie 5 (Wykonane wspólnie)
+
+```text
+Proszę dodać formularz dodawania kolekcji filmów.
+```
+
+1) Dodać nowy formularz w klasie [forms.py](forms.py). Sposób dowolny ModelForm/Form.
+2) Dopisać dla istniejącego widoku logikę zapisywania nowej kolekcji filmów
+
+<span style="color:yellow">Czas na wykonanie zadania - 20min.</span>
+
+## Zadanie 6 
+```text
+Proszę dodać funkcjonalność dodawania filmów do kolekcji. Dodawanie filmu powinno odbywać się z poziomu
+szczegółów filmu. Powinniśmy móc dodać film tylko do kolekcji w których go jeszcze nie ma.
+Po kliknięciu w guzik dodawania do kolekcji przenosimy użytkownika do nowej strony z wyborem kolekcji.
+```
