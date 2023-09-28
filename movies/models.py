@@ -1,10 +1,11 @@
-from django.core.validators import MinValueValidator, MinLengthValidator
-from django.db import models
+import os
+
 # python -m pip install requests
 import requests
+from django.core.validators import MinValueValidator, MinLengthValidator
+from django.contrib.auth.models import User
+from django.db import models
 from dotenv import load_dotenv
-import os
-import random
 
 load_dotenv()
 
@@ -77,16 +78,6 @@ class Movie(models.Model):
             return "https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/" + data['backdrop_path']
 
         return ''
-
-
-class User(models.Model):
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    email = models.EmailField()
-    birth_day = models.DateField()
-
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
 
 
 class MovieCollection(models.Model):

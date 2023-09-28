@@ -89,6 +89,7 @@ Faza 5 (Auth)
 - Możliwość wylogowania
 - Zabezpieczyć wszystkie ścieżki dla filmów i kolekcji
 - Kolekcje wiązane bezpośrednio z zalogowanym użytkownikiem
+- [Zadanie 7](#zadanie-7)
 
 ## Praca z szablonami widoków (templates)
 
@@ -679,3 +680,13 @@ Po kliknięciu w guzik dodawania do kolekcji przenosimy użytkownika do nowej st
 1) Dodać metodę w views.py
 2) Dodać mapowanie w urls.py
 3) Dodać nowy HTML dla połączenia filmu i kolekcji
+
+## Zadanie 7
+```text
+Proszę dopisać całą logikę dla funkcjonalności: Moja Lista.
+Możliwość dodawania i usuwania filmów do mojej listy.
+Każdy użytkownik ma tylko 1 listę.
+Użytkownicy nie widzą swoich list nawzajem.
+```
+
+<span style="color:yellow">Czas na wykonanie zadania - 1,5h.</span>
