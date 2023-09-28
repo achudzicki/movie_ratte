@@ -78,6 +78,14 @@ Faza 4 (Forms)
 - Dodanie możliwości usuwania filmów z kolekcji oraz usuwania całych kolekcji
 - Poprawienie widoku kolekcji i łączenia filmu z kolekcją (opcjanalnie)
 
+---
+Faza 5 (Auth)
+---
+
+- Dodanie nowej aplikacji w naszym programie
+- Dodanie możliwości tworzenia konta użytkownika w naszej aplikacji
+- Dodanie możliwości zalogowania się
+
 ## Praca z szablonami widoków (templates)
 
 ### Tworzenie nowego folderu dla Templates
@@ -554,7 +562,26 @@ Django pomaga nam przy walidacji naszych formularzy w sposób wygodny.
 
 - Dodajemy w naszej aplikacji plik [forms.py](forms.py). Jest to opcjonalne, jednak często dodaje się taki dodatkowy
   plik dla czytelności.
--
+
+## Autoryzacja użytkownika w Django
+```text
+Django posiada domyślną implementacje autoryzacji i uwierzytelniania użytkownika w systemie.
+Dla wielu aplikacji podejście domyślne w zupełności wystarcza. Podczas pisania naszego programu 
+stworzyliśmy już 1 użytkownika (Admina który mógł logować się do panelu admina Django).
+```
+- Tabela dla naszych użytkowników jest już przygotowana dla nasz przez Django (auth_user)
+- [Pełna lista API użytkownika](https://docs.djangoproject.com/en/4.2/ref/contrib/auth/#django.contrib.auth.models.User)
+- Aby utworzyć użytkownika, należy skorzystać z gotowej klasy User i użyć metody create_user
+```python
+from django.contrib.auth.models import User
+user = User.objects.create_user("john", "lennon@thebeatles.com", "johnpassword")
+
+# At this point, user is a User object that has already been saved
+# to the database. You can continue to change its attributes
+# if you want to change other fields.
+user.last_name = "Lennon"
+user.save()
+```
 
 # Zadania
 
