@@ -32,18 +32,28 @@
     </div>
     <div class="uk-width-expand" style="background: #100f12">
         <nav class="uk-navbar-container" style="background: inherit">
-            <div class="uk-margin-medium-left" uk-navbar>
-                <div class="uk-navbar-left">
-                    <span uk-icon="icon: users; ratio: 1.5"></span>
-                    <div>Admin</div>
-                    <ul class="uk-navbar-nav">
-                        <li>
-                            <a href="{% url 'add_movie' %}">
-                                Dodaj Film
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="uk-margin-medium-left uk-margin-medium-right uk-padding" uk-navbar>
+                {% if user.is_authenticated and  user.is_superuser %}
+                    <div class="uk-navbar-left">
+                        <div>Admin</div>
+                        <ul class="uk-navbar-nav">
+                            <li>
+                                <a href="{% url 'add_movie' %}">
+                                    Dodaj Film
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% comment %}Tutaj mamy dostępnego usera. Dostarcza nam go domyślnie DJANGO{% endcomment %}
+                {% if user.is_authenticated %}
+                    <div class="uk-navbar-right">
+                        <span uk-icon="icon: users; ratio: 1.5"></span>
+                        {{ user.get_username|upper }}
+                        <a href="{% url 'logout' %}" class="uk-button-default uk-button">Wyloguj</a>
+                    </div>
+                {% endif %}
             </div>
         </nav>
         {% block  page_content %}

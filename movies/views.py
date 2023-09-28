@@ -3,11 +3,13 @@ import datetime
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 from .forms import MovieForm, MovieCollectionForm
 from .models import Movie, MovieCollection, User
 
 
+@login_required
 def all_movies(request):
     # Pamiętamy, że tutaj nie idzie jeszcze zapytanie do bazy danych
     title = request.GET.get('title')
@@ -40,6 +42,8 @@ def all_movies(request):
     })
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def add_movie(request):
     if request.method == 'POST':
         # Wyciągamy dane z naszego formularza
@@ -65,6 +69,7 @@ def add_movie(request):
     })
 
 
+@login_required
 def find_by_tmdb_id(request, id):
     found_movie = get_object_or_404(Movie, id=id)
     latest_movies = Movie.objects.all().order_by('-release_date')[:5]
@@ -74,6 +79,7 @@ def find_by_tmdb_id(request, id):
     })
 
 
+@login_required
 def movie_collections(request):
     additional_errors = []
     if request.POST:
@@ -101,6 +107,7 @@ def movie_collections(request):
     })
 
 
+@login_required
 def collection_details(request, id):
     movie_collection = MovieCollection.objects.get(pk=id)
     movies_in_collection = movie_collection.movies.all()
@@ -112,8 +119,7 @@ def collection_details(request, id):
     })
 
 
-# Metoda GET powinna wyświetlić wybrany film i listę kolekcji, gdzie tego filmu jeszcze nie ma.
-# Metoda POST powinna dodać film do kolekcji
+@login_required
 def add_movie_to_collection(request, movie_id):
     found_movie = get_object_or_404(Movie, id=movie_id)
 
@@ -131,6 +137,7 @@ def add_movie_to_collection(request, movie_id):
     })
 
 
+@login_required
 def remove_movie_from_collection(request, collection_id, movie_id):
     collection = get_object_or_404(MovieCollection, id=collection_id)
     movie_to_remove = get_object_or_404(Movie, id=movie_id)
@@ -138,6 +145,7 @@ def remove_movie_from_collection(request, collection_id, movie_id):
     return redirect('collection', id=collection_id)
 
 
+@login_required
 def remove_collection(request, collection_id):
     collection_to_remove = get_object_or_404(MovieCollection, id=collection_id)
     collection_to_remove.delete()

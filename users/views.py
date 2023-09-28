@@ -3,11 +3,6 @@ from django.shortcuts import render, redirect
 from .forms import RegisterForm
 
 
-# Create your views here.
-def login(request):
-    return render(request, 'users/login.html')
-
-
 def register(request):
     if request.method == 'GET':
         register_form = RegisterForm()

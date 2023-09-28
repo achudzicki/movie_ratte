@@ -84,7 +84,11 @@ Faza 5 (Auth)
 
 - Dodanie nowej aplikacji w naszym programie
 - Dodanie możliwości tworzenia konta użytkownika w naszej aplikacji
-- Dodanie możliwości zalogowania się
+- [Dodanie możliwości zalogowania się](#logowanie)
+- Dodanie zalogowanego użytkownika
+- Możliwość wylogowania
+- Zabezpieczyć wszystkie ścieżki dla filmów i kolekcji
+- Kolekcje wiązane bezpośrednio z zalogowanym użytkownikiem
 
 ## Praca z szablonami widoków (templates)
 
@@ -581,6 +585,13 @@ user = User.objects.create_user("john", "lennon@thebeatles.com", "johnpassword")
 # if you want to change other fields.
 user.last_name = "Lennon"
 user.save()
+```
+
+### Logowanie
+```text
+Logowanie jest dostępne dzięki aplikacji 'django.contrib.auth' w INSTALLED_APPS.
+Wystarczy dodać nowy wpis w naszym głównym pliku urls.py oraz dodać plik html o nazwie
+login.html do folderu templates/registration/
 ```
 
 # Zadania

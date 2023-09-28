@@ -19,6 +19,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Musimy dodać te ścieżki i przenieść login.html w odpowiednie miejsce.
+    path("accounts/", include("django.contrib.auth.urls")),
     path('movies/', include('movies.urls')),
     path('users/', include('users.urls'))
 ]
