@@ -76,7 +76,7 @@ Faza 4 (Forms)
 - [Zadanie 5](#zadanie-5)
 - [Zadanie 6](#zadanie-6)
 - Dodanie możliwości usuwania filmów z kolekcji oraz usuwania całych kolekcji
-- Poprawienie widoku kolekcji
+- Poprawienie widoku kolekcji i łączenia filmu z kolekcją (opcjanalnie)
 
 ## Praca z szablonami widoków (templates)
 

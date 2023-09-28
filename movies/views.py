@@ -104,9 +104,11 @@ def movie_collections(request):
 def collection_details(request, id):
     movie_collection = MovieCollection.objects.get(pk=id)
     movies_in_collection = movie_collection.movies.all()
+    paginator = Paginator(movies_in_collection, 5)
+    page = paginator.get_page(request.GET.get('page', 1))
     return render(request, 'movies/collection_details.html', {
         'collection': movie_collection,
-        'movies': movies_in_collection
+        'movies_page': page
     })
 
 

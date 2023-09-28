@@ -51,8 +51,12 @@
                     <td>{{ collection.update_date }}</td>
                     <td>{{ collection.movie_count }}</td>
                     <td>
-                        <a href="{% url 'collection' id=collection.id %}">Szczegóły</a>
-                        <a href="{% url 'remove_collection' collection_id=collection.id %}">Usuń</a>
+                        <a href="{% url 'collection' id=collection.id %}"
+                           style="color: white; background: #b81e12"
+                           class="uk-icon-button uk-margin-small-right" uk-icon="search"></a>
+                        <a href="{% url 'remove_collection' collection_id=collection.id %}"
+                           style="color: white; background: #b81e12"
+                           class="uk-icon-button uk-margin-small-right" uk-icon="trash"></a>
                     </td>
                 </tr>
             {% endfor %}
